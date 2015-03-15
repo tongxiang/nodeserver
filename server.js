@@ -10,6 +10,7 @@ var server = http.createServer(function(req, res) {
     , pathName = parsedUrl.pathname
     , queryObject = parsedUrl.query
     , key
+    , data
     ;
 
   if (pathName == "/set") {
@@ -24,6 +25,16 @@ var server = http.createServer(function(req, res) {
       res.writeHead(200, {'Content-Type': 'text/plain'});
       res.end('Key-value pair of (' + key + ': ' + memoryStore[key] + ') retrieved.');
     } 
+  }
+  else if (pathName == "/save") {
+    data = JSON.stringify(memoryStore);
+    try {
+      fs.writeFileSync('data.txt', data);
+    } catch (err) {
+      res.end(404, err);
+    }
+    res.writeHead(201, {'Content-Type': 'text/plain'});
+    res.end('Memory store file data.txt created.');
   }
   res.writeHead(404);
   res.end();
